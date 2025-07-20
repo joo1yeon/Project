@@ -8,7 +8,7 @@ import lombok.Getter;
 public class PointChargeResponse {
 
     private int chargedPoint;   // 충전된 포인트
-    private int totalPoint;     // 총 보유 포인트
-    private String paymentStatus;   // 결제 결과(성공/실패)
+    private boolean success;   // 결제 결과(성공/실패)
+    private String message;
 
 }

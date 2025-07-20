@@ -17,9 +17,13 @@ public class PointController {
 
     private final PointService pointService;
 
-    @PostMapping("/charge")
+    @PostMapping("/charge/confirm")
     public ResponseEntity<PointChargeResponse> chargePoint(@RequestBody PointChargeRequest request) {
-        PointChargeResponse response = pointService.chargePoint(request);
-        return ResponseEntity.ok(response);
+        PointChargeResponse response = pointService.confirmAndChargePoint(request);
+        if (response.isSuccess()) {
+            return ResponseEntity.ok(response);
+        } else {
+            return ResponseEntity.badRequest().body(response);
+        }
     }
 }
