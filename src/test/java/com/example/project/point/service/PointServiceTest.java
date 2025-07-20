@@ -4,11 +4,15 @@ import com.example.project.member.entity.Member;
 import com.example.project.member.repository.MemberRepository;
 import com.example.project.point.dto.PointChargeRequest;
 import com.example.project.point.dto.PointChargeResponse;
+import com.example.project.point.dto.TossConfirmResult;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.context.annotation.Bean;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -23,7 +27,18 @@ class PointServiceTest {
     @Autowired
     MemberRepository memberRepository;
 
+    @Autowired
+    private TossPayments tossPayments;
+
     Long memberId;
+
+    @TestConfiguration
+    static class MockConfig {
+        @Bean
+        public TossPayments tossPayments() {
+            return Mockito.mock(TossPayments.class);
+        }
+    }
 
     @BeforeEach
     void setUp() {
@@ -35,6 +50,9 @@ class PointServiceTest {
                 .build());
 
         memberId = member.getId();
+
+        Mockito.when(tossPayments.confirmPayment("P_1234", "O_1234", 1000))
+                .thenReturn(new TossConfirmResult(true, "DONE"));
     }
 
     @Test
@@ -42,25 +60,25 @@ class PointServiceTest {
     void chargePointTest() {
 
         // given
-        int chargeAmount = 5000;
         PointChargeRequest request = new PointChargeRequest(
                 memberId,
-                chargeAmount,
-                "paymentKey",
-                "orderId"
+                1000,
+                "P_1234",
+                "O_1234"
         );
 
         // when
-        PointChargeResponse response = pointService.chargePoint(request);
+        PointChargeResponse response = pointService.confirmAndChargePoint(request);
 
         // then
-        assertThat(response.getChargedPoint()).isEqualTo(chargeAmount);
-        assertThat(response.getPaymentStatus()).isEqualTo("SUCCESS");
+        assertThat(response.isSuccess()).isTrue();
+        assertThat(response.getChargedPoint()).isEqualTo(1000);
+        assertThat(response.getMessage()).contains("포인트 충전 완료");
 
-        // DB 반영 확인
-        Member updatedMember = memberRepository.findById(memberId).orElseThrow();
-        assertThat(updatedMember.getPoint()).isEqualTo(2000 + chargeAmount);
-        assertThat(response.getTotalPoint()).isEqualTo(updatedMember.getPoint());
+        // DB의 포인트 확인
+        Member updated = memberRepository.findById(memberId).get();
+        assertThat(updated.getPoint()).isEqualTo(3000);
+
     }
 
 }
