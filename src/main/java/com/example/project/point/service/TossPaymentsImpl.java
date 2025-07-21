@@ -4,6 +4,7 @@ import com.example.project.point.dto.TossConfirmResult;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -14,6 +15,7 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
+@Service
 public class TossPaymentsImpl implements TossPayments {
 
     @Value("${toss.secret-key}")
