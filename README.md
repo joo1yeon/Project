@@ -4,9 +4,9 @@ Spring Boot 기반 회원 프로필, 포인트 충전 기능 구현 과제
 
 ## 📦 프로젝트 개요
 
-- 회원 프로필 목록/상세 조회, 포인트 충전, 쿠폰 할인 적용 등 **실제 서비스와 유사한 기능**을 구현
+- 회원 프로필 목록/상세 조회, 포인트 충전, 쿠폰 할인 적용 기능 구현
 
-- **QueryDSL, JPA, Docker, MySQL, Gradle** 등 실무 환경을 반영
+- **QueryDSL, JPA, Docker, MySQL, Gradle**
 
 - **Dockerfile, docker-compose.yml**만으로 실행 가능 (별도 설치 불필요)
 
@@ -15,19 +15,20 @@ Spring Boot 기반 회원 프로필, 포인트 충전 기능 구현 과제
 ### 1. 프로젝트 클론
 
 ```bash
-git clone https://github.com/your-username/StoreLabs-Assignment.git
-cd StoreLabs-Assignment
+git clone https://github.com/joo1yeon/Project.git
+cd Project
 ```
 
 ### 2. Docker 빌드 & 실행
 
 ```bash
+./gradlew build -x test
 docker-compose up --build
 ```
 
 - 서버: http://localhost:8080
 
-- MySQL: localhost:3306 (user: user, password: password, db: mydb)
+- MySQL: localhost:3306
 
 ## 📝 주요 기능
 
@@ -62,3 +63,6 @@ docker-compose up --build
 - QueryDSL: JPA 동적 쿼리 구현
 
 - MySQL Docker Image: 로컬 개발/테스트용 DB
+
+- Swagger: API 문서화
+  > http://localhost:8080/swagger-ui.html
